@@ -38,8 +38,8 @@ func main() {
 		fmt.Println(err)
 	}
 		
-    // b.SetTTL(3600) // Uncomment this to set an expiration (or ttl) of the token (in seconds).
-    // token = "87xcBk8vNwiXfuSlNx7DOJFFi7aamFqMqrlevkfJLZdyZpOJUaVOn5OsYA04k351AQhIbYYkm4TPK" // This token will be not allowed if a ttl is set.
+    	// b.SetTTL(3600) // Uncomment this to set an expiration (or ttl) of the token (in seconds).
+    	// token = "87xcBk8vNwiXfuSlNx7DOJFFi7aamFqMqrlevkfJLZdyZpOJUaVOn5OsYA04k351AQhIbYYkm4TPK" // This token will be not allowed if a ttl is set.
 	
 	// Decode Branca Token.
 	message, err := b.DecodeToString(token)
@@ -57,7 +57,8 @@ func main() {
 Here are a few things that need to be done:
 
 - [ ] Remove cgo dependencies.
-- [ ] Move to pure XChaCha20 algorithm in Go..
+- [ ] Move to a pure XChaCha20 algorithm in Go.
+- [ ] 
 - [ ] Increase test coverage.
 - [ ] Performance benchmarks.
 - [ ] Add more tests than just acceptance tests.
