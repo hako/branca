@@ -58,7 +58,7 @@ Here are a few things that need to be done:
 
 - [ ] Remove cgo dependencies.
 - [ ] Move to a pure XChaCha20 algorithm in Go.
-- [ ] 
+- [ ] Additional Methods. (Encode, Decode []byte)
 - [ ] Increase test coverage.
 - [ ] Performance benchmarks.
 - [ ] Add more tests than just acceptance tests.
