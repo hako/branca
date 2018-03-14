@@ -1,6 +1,6 @@
 # branca [wip]
 
-[![Build Status](https://travis-ci.org/hako/branca.svg?branch=master)](https://travis-ci.org/hako/durafmt) [![Go Report Card](https://goreportcard.com/badge/github.com/hako/branca)](https://goreportcard.com/report/github.com/hako/branca)
+[![Build Status](https://travis-ci.org/hako/branca.svg?branch=master)](https://travis-ci.org/hako/branca) [![Go Report Card](https://goreportcard.com/badge/github.com/hako/branca)](https://goreportcard.com/report/github.com/hako/branca)
 [![GoDoc](https://godoc.org/github.com/hako/branca?status.svg)](https://godoc.org/github.com/hako/branca) 
 
 branca is a secure alternative to JWT, This implementation is written in Go and implements the [branca token specification](https://github.com/tuupola/branca-spec).
