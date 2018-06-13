@@ -5,6 +5,12 @@
 
 branca is a secure alternative to JWT, This implementation is written in pure Go (no cgo dependencies) and implements the [branca token specification](https://github.com/tuupola/branca-spec).
 
+# Requirements
+
+Go 1.8 and beyond.
+
+# Install
+
 ```
 go get github.com/hako/branca
 ```
