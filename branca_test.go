@@ -9,7 +9,7 @@ var (
 		key       string
 		nonce     string
 		timestamp uint32
-		payload	  string
+		payload   string
 		expected  string
 	}
 )
@@ -20,7 +20,7 @@ func TestVector1(t *testing.T) {
 		key       string
 		nonce     string
 		timestamp uint32
-		payload	  string
+		payload   string
 		expected  string
 	}{
 		{"supersecretkeyyoushouldnotcommit", "0102030405060708090a0b0c0102030405060708090a0b0c", 123206400, "Hello world!", "875GH233T7IYrxtgXxlQBYiFobZMQdHAT51vChKsAIYCFxZtL1evV54vYqLyZtQ0ekPHt8kJHQp0a"},
@@ -57,7 +57,7 @@ func TestVector2(t *testing.T) {
 		key       string
 		nonce     string
 		timestamp uint32
-		payload	  string
+		payload   string
 		expected  string
 	}{
 		{"supersecretkeyyoushouldnotcommit", "0102030405060708090a0b0c0102030405060708090a0b0c", 123206400, "Hello world!", "875GH233T7IYrxtgXxlQBYiFobZMQdHAT51vChKsAIYCFxZtL1evV54vYqLyZtQ0ekPHt8kJHQp0a"},

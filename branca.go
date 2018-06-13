@@ -1,35 +1,34 @@
-// Package branca implements the branca token specification https://github.com/tuupola/branca-spec, branca is designed to provide authenticated and encrypted API tokens using modern crypto.
 package branca
 
 import (
-	"time"
 	"bytes"
-	"errors"
 	"crypto/rand"
-	"encoding/hex"
 	"encoding/binary"
+	"encoding/hex"
+	"errors"
+	"time"
 
+	chacha20poly1305 "github.com/aead/chacha20poly1305"
 	basex "github.com/eknkc/basex"
-	xchacha20 "github.com/GoKillers/libsodium-go/crypto/aead/xchacha20poly1305ietf"
 )
 
 const (
 	version byte = 0xBA // Branca magic byte
-	base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	base62       = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 )
 
 var (
-	errInvalidToken = errors.New("invalid base62 token")
+	errInvalidToken        = errors.New("invalid base62 token")
 	errInvalidTokenVersion = errors.New("invalid token version")
-	errExpiredToken = errors.New("token is expired")
+	errExpiredToken        = errors.New("token is expired")
 )
 
-// Branca holds a key of 32 bytes. nonce and timestamp are used for acceptance tests. 
+// Branca holds a key of 32 bytes. The nonce and timestamp are used for acceptance tests.
 type Branca struct {
-	Key			string
-	nonce		string
-	ttl			uint32
-	timestamp	uint32
+	Key       string
+	nonce     string
+	ttl       uint32
+	timestamp uint32
 }
 
 // SetTTL sets a Time To Live on the token for valid tokens.
@@ -50,7 +49,7 @@ func (b *Branca) setNonce(nonce string) {
 // NewBranca creates a *Branca struct.
 func NewBranca(key string) (b *Branca) {
 	return &Branca{
-		Key:     key,
+		Key: key,
 	}
 }
 
@@ -65,7 +64,7 @@ func (b *Branca) EncodeToString(data string) (string, error) {
 	timestamp = b.timestamp
 
 	if len(b.nonce) == 0 {
-		nonce = make([]byte, xchacha20.NonceBytes)
+		nonce = make([]byte, 24)
 		_, err := rand.Read(nonce)
 		if err != nil {
 			return "", err
@@ -86,12 +85,13 @@ func (b *Branca) EncodeToString(data string) (string, error) {
 	header := append(timeBuffer, nonce...)
 	header = append([]byte{version}, header...)
 
-	var Key [xchacha20.KeyBytes]byte
-	copy(Key[:], key)
-	var Nonce [xchacha20.NonceBytes]byte
-	copy(Nonce[:], nonce)
+	xchacha, err := chacha20poly1305.NewXCipher(key)
+	if err != nil {
+		return "", err
+	}
 
-	ciphertext := xchacha20.Encrypt(payload, header, &Nonce, &Key)
+	ciphertext := xchacha.Seal(nil, nonce, payload, header)
+
 	token := append(header, ciphertext...)
 	base62, err := basex.NewEncoding(base62)
 	if err != nil {
@@ -101,17 +101,20 @@ func (b *Branca) EncodeToString(data string) (string, error) {
 }
 
 // DecodeToString decodes the data.
-func (b *Branca) DecodeToString(data string) (string, error)  {
+func (b *Branca) DecodeToString(data string) (string, error) {
 	if len(data) < 62 {
 		return "", errInvalidToken
 	}
 	base62, err := basex.NewEncoding(base62)
+	if err != nil {
+		return "", errInvalidToken
+	}
 	token, err := base62.Decode(data)
 	if err != nil {
 		return "", errInvalidToken
 	}
 	header := token[0:29]
-	ciphertext := token[29:len(token)]
+	ciphertext := token[29:]
 	tokenversion := header[0]
 	timestamp := binary.BigEndian.Uint32(header[1:5])
 	nonce := header[5:]
@@ -121,12 +124,12 @@ func (b *Branca) DecodeToString(data string) (string, error)  {
 	}
 
 	key := bytes.NewBufferString(b.Key).Bytes()
-	var Key [xchacha20.KeyBytes]byte
-	copy(Key[:], key)
-	var Nonce [xchacha20.NonceBytes]byte
-	copy(Nonce[:], nonce)
 
-	payload, err := xchacha20.Decrypt(ciphertext, header, &Nonce, &Key)
+	xchacha, err := chacha20poly1305.NewXCipher(key)
+	if err != nil {
+		return "", err
+	}
+	payload, err := xchacha.Open(nil, nonce, ciphertext, header)
 	if err != nil {
 		return "", err
 	}

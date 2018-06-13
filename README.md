@@ -1,19 +1,9 @@
-# branca [wip]
+# branca
 
 [![Build Status](https://travis-ci.org/hako/branca.svg?branch=master)](https://travis-ci.org/hako/durafmt) [![Go Report Card](https://goreportcard.com/badge/github.com/hako/branca)](https://goreportcard.com/report/github.com/hako/branca)
 [![GoDoc](https://godoc.org/github.com/hako/branca?status.svg)](https://godoc.org/github.com/hako/branca) 
 
-branca is a secure alternative to JWT, This implementation is written in Go and implements the [branca token specification](https://github.com/tuupola/branca-spec).
-
-Currently, this library depends on [libsodium-go](https://github.com/GoKillers/libsodium-go) (which uses cgo), In the future, this will be resolved with a pure XChaCha20 Go implementation.
-
-# Installation
-
-Unfortunately, the build process over at [libsodium-go](https://github.com/GoKillers/libsodium-go) has additional steps than `go get` So you have to install [libsodium](https://github.com/GoKillers/libsodium-go) first, then [install libsodium-go](https://github.com/GoKillers/libsodium-go#how-to-build).
-
-*If you're on Mac, you can install libsodium with `brew install libsodium`*
-
-And now you can:
+branca is a secure alternative to JWT, This implementation is written in pure Go (no cgo dependencies) and implements the [branca token specification](https://github.com/tuupola/branca-spec).
 
 ```
 go get github.com/hako/branca
@@ -56,8 +46,8 @@ func main() {
 
 Here are a few things that need to be done:
 
-- [ ] Remove cgo dependencies.
-- [ ] Move to a pure XChaCha20 algorithm in Go.
+- [x] Remove cgo dependencies.
+- [x] Move to a pure XChaCha20 algorithm in Go.
 - [ ] Additional Methods. (Encode, Decode []byte)
 - [ ] Increase test coverage.
 - [ ] Performance benchmarks.
