@@ -20,10 +20,11 @@ const (
 var (
 	errInvalidToken        = errors.New("invalid base62 token")
 	errInvalidTokenVersion = errors.New("invalid token version")
+	errBadKeyLength        = errors.New("bad key length")
 	errExpiredToken        = errors.New("token is expired")
 )
 
-// Branca holds a key of 32 bytes. The nonce and timestamp are used for acceptance tests.
+// Branca holds a key of exactly 32 bytes. The nonce and timestamp are used for acceptance tests.
 type Branca struct {
 	Key       string
 	nonce     string
@@ -87,7 +88,7 @@ func (b *Branca) EncodeToString(data string) (string, error) {
 
 	xchacha, err := chacha20poly1305.NewXCipher(key)
 	if err != nil {
-		return "", err
+		return "", errBadKeyLength
 	}
 
 	ciphertext := xchacha.Seal(nil, nonce, payload, header)
@@ -127,7 +128,7 @@ func (b *Branca) DecodeToString(data string) (string, error) {
 
 	xchacha, err := chacha20poly1305.NewXCipher(key)
 	if err != nil {
-		return "", err
+		return "", errBadKeyLength
 	}
 	payload, err := xchacha.Open(nil, nonce, ciphertext, header)
 	if err != nil {
