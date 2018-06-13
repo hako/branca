@@ -43,7 +43,7 @@ func main() {
 		fmt.Println(err) // token is expired.
 		return
 	}
-	fmt.Println(token) // 87xcBe....
+	fmt.Println(token) // 87y8da....
 	fmt.Println(message) // Hello world!
 }
 ```
@@ -58,7 +58,7 @@ Here are a few things that need to be done:
 - [ ] Increase test coverage.
 - [ ] Performance benchmarks.
 - [ ] Add more tests than just acceptance tests.
-- [ ] More comments and documentation
+- [ ] More comments and documentation.
 
 # Contributing
 
