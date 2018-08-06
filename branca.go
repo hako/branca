@@ -8,8 +8,8 @@ import (
 	"errors"
 	"time"
 
-	chacha20poly1305 "github.com/aead/chacha20poly1305"
-	basex "github.com/eknkc/basex"
+	"golang.org/x/crypto/chacha20poly1305"
+	"github.com/eknkc/basex"
 )
 
 const (
@@ -86,7 +86,7 @@ func (b *Branca) EncodeToString(data string) (string, error) {
 	header := append(timeBuffer, nonce...)
 	header = append([]byte{version}, header...)
 
-	xchacha, err := chacha20poly1305.NewXCipher(key)
+	xchacha, err := chacha20poly1305.NewX(key)
 	if err != nil {
 		return "", errBadKeyLength
 	}
@@ -126,7 +126,7 @@ func (b *Branca) DecodeToString(data string) (string, error) {
 
 	key := bytes.NewBufferString(b.Key).Bytes()
 
-	xchacha, err := chacha20poly1305.NewXCipher(key)
+	xchacha, err := chacha20poly1305.NewX(key)
 	if err != nil {
 		return "", errBadKeyLength
 	}
