@@ -8,8 +8,8 @@ import (
 	"errors"
 	"time"
 
-	"golang.org/x/crypto/chacha20poly1305"
 	"github.com/eknkc/basex"
+	"golang.org/x/crypto/chacha20poly1305"
 )
 
 const (
