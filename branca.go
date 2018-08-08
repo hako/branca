@@ -1,3 +1,4 @@
+// Package branca implements the branca token specification.
 package branca
 
 import (
