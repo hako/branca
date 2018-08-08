@@ -66,8 +66,7 @@ func (b *Branca) EncodeToString(data string) (string, error) {
 
 	if len(b.nonce) == 0 {
 		nonce = make([]byte, 24)
-		_, err := rand.Read(nonce)
-		if err != nil {
+		if _, err := rand.Read(nonce); err != nil {
 			return "", err
 		}
 	} else {
