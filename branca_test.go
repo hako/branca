@@ -1,7 +1,9 @@
 package branca
 
 import (
+	"errors"
 	"testing"
+	"time"
 )
 
 var (
@@ -167,6 +169,68 @@ func TestInvalidDecodeString(t *testing.T) {
 		_, err := b.DecodeToString(table.expected)
 		if err == nil {
 			t.Errorf("%q", err)
+		}
+	}
+}
+
+// TestExpiredTokenError tests if decoding an expired tokens returns the corresponding error type.
+func TestExpiredTokenError(t *testing.T) {
+	b := NewBranca("supersecretkeyyoushouldnotcommit")
+
+	ttl := time.Second * 1
+	b.SetTTL(uint32(ttl.Seconds()))
+	token, encErr := b.EncodeToString("Hello World!")
+	if encErr != nil {
+		t.Errorf("%q", encErr)
+	}
+
+	// Wait (with enough additional waiting time) until the token is expired...
+	time.Sleep(ttl * 3)
+	// ...and decode the token again that is expired by now.
+	_, decErr := b.DecodeToString(token)
+	if !errors.Is(decErr, ErrExpiredToken) {
+		t.Errorf("%v", decErr)
+	}
+}
+
+// TestInvalidTokenError tests if decoding an invalid token returns the corresponding error type.
+func TestInvalidTokenError(t *testing.T) {
+	b := NewBranca("supersecretkeyyoushouldnotcommit")
+
+	_, err := b.DecodeToString("$")
+	if !errors.Is(err, ErrInvalidToken) {
+		t.Errorf("%v", err)
+	}
+}
+
+// TestInvalidTokenVersionError tests if decoding an invalid token returns the corresponding error type.
+func TestInvalidTokenVersionError(t *testing.T) {
+	// A token with an invalid version where the HEX value 0XBA has been replaced with 0xFF.
+	// The original token is "1WgRcDTWm6MyptVOMG9TeEPVcYW01K6hW5SzLrzCkLlrOOovO5TmpDxQql12N2n0jELx".
+	tokenWithInvalidVersion := "25jsrzc9Q6kmzrnCYWf5Z7LCOG2C7Uiu3NbTP0B9ppLDrxZkhLGOuFVB6FqrWp0ypJTF"
+
+	b := NewBranca("supersecretkeyyoushouldnotcommit")
+	_, err := b.DecodeToString(tokenWithInvalidVersion)
+	if !errors.Is(err, ErrInvalidTokenVersion) {
+		t.Errorf("%v", err)
+	}
+}
+
+// TestBadKeyLengthError tests if (en/de)coding a token with an invalid key returns the corresponding error type.
+func TestBadKeyLengthError(t *testing.T) {
+	validToken := "875GH233T7IYrxtgXxlQBYiFobZMQdHAT51vChKsAIYCFxZtL1evV54vYqLyZtQ0ekPHt8kJHQp0a"
+	testKeys := []string{
+		"",
+		"thiskeyistooshort",
+		"thiskeyislongerthantheexpected32bytes",
+	}
+
+	for _, key := range testKeys {
+		b := NewBranca(key)
+
+		_, err := b.DecodeToString(validToken)
+		if !errors.Is(err, ErrBadKeyLength) {
+			t.Errorf("%v", err)
 		}
 	}
 }
