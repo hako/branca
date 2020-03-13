@@ -7,7 +7,7 @@ branca is a secure alternative to JWT, This implementation is written in pure Go
 
 # Requirements
 
-Go 1.9+
+Go 1.13+
 
 # Install
 

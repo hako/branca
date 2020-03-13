@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	version byte = 0xBA // Branca magic byte
-	base62       = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	version byte   = 0xBA // Branca magic byte
+	base62  string = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 )
 
 var (
