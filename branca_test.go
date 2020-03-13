@@ -188,7 +188,8 @@ func TestExpiredTokenError(t *testing.T) {
 	time.Sleep(ttl * 3)
 	// ...and decode the token again that is expired by now.
 	_, decErr := b.DecodeToString(token)
-	if !errors.Is(decErr, ErrExpiredToken) {
+	var errExpiredToken *ErrExpiredToken
+	if !errors.As(decErr, &errExpiredToken) {
 		t.Errorf("%v", decErr)
 	}
 }

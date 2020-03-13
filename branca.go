@@ -7,6 +7,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/eknkc/basex"
@@ -25,9 +26,18 @@ var (
 	ErrInvalidTokenVersion = errors.New("invalid token version")
 	// ErrBadKeyLength indicates a bad key length.
 	ErrBadKeyLength = errors.New("bad key length")
-	// ErrExpiredToken indicates an expired token.
-	ErrExpiredToken = errors.New("token is expired")
 )
+
+// ErrExpiredToken indicates an expired token.
+type ErrExpiredToken struct {
+	// Time is the token expiration time.
+	Time time.Time
+}
+
+func (e *ErrExpiredToken) Error() string {
+	delta := time.Unix(time.Now().Unix(), 0).Sub(time.Unix(e.Time.Unix(), 0))
+	return fmt.Sprintf("token is expired by %v", delta)
+}
 
 // Branca holds a key of exactly 32 bytes. The nonce and timestamp are used for acceptance tests.
 type Branca struct {
@@ -143,7 +153,7 @@ func (b *Branca) DecodeToString(data string) (string, error) {
 		future := int64(timestamp + b.ttl)
 		now := time.Now().Unix()
 		if future < now {
-			return "", ErrExpiredToken
+			return "", &ErrExpiredToken{Time: time.Unix(future, 0)}
 		}
 	}
 
