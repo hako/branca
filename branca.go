@@ -118,7 +118,7 @@ func (b *Branca) EncodeToString(data string) (string, error) {
 // DecodeToString decodes the data.
 func (b *Branca) DecodeToString(data string) (string, error) {
 	if len(data) < 62 {
-		return "", ErrInvalidToken
+		return "", fmt.Errorf("%w: length is less than 62", ErrInvalidToken)
 	}
 	base62, err := basex.NewEncoding(base62)
 	if err != nil {
@@ -135,7 +135,7 @@ func (b *Branca) DecodeToString(data string) (string, error) {
 	nonce := header[5:]
 
 	if tokenversion != version {
-		return "", ErrInvalidTokenVersion
+		return "", fmt.Errorf("%w: got %#X but expected %#X", ErrInvalidTokenVersion, tokenversion, version)
 	}
 
 	key := bytes.NewBufferString(b.Key).Bytes()
