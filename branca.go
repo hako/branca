@@ -122,7 +122,7 @@ func (b *Branca) DecodeToString(data string) (string, error) {
 	}
 	base62, err := basex.NewEncoding(base62)
 	if err != nil {
-		return "", ErrInvalidToken
+		return "", fmt.Errorf("%v", err)
 	}
 	token, err := base62.Decode(data)
 	if err != nil {
