@@ -128,7 +128,7 @@ func (b *Branca) DecodeToString(data string) (string, error) {
 	if err != nil {
 		return "", ErrInvalidToken
 	}
-	header := token[0:29]
+	header := token[:29]
 	ciphertext := token[29:]
 	tokenversion := header[0]
 	timestamp := binary.BigEndian.Uint32(header[1:5])
